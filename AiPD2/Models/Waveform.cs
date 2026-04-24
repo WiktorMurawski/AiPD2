@@ -5,7 +5,7 @@
         public string FileName { get; private set; }
         public int SampleRate { get; private set; }
         public TimeSpan Duration { get; private set; }
-        public float[] Samples { get; private set; }
+        public double[] Samples { get; private set; }
 
         public Waveform(string filePath)
         {

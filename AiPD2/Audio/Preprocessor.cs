@@ -2,17 +2,28 @@
 {
     internal static class Preprocessor
     {
-        public static float[] RemoveDCOffset(float[] samples)
+        public static double[] RemoveDCOffset(double[] samples)
         {
-            float mean = samples.Average();
+            double mean = samples.Average();
             return samples.Select(s => s - mean).ToArray();
         }
 
-        public static float[] Normalize(float[] samples)
+        public static double[] Normalize(double[] samples)
         {
-            float peak = samples.Max(Math.Abs);
+            double peak = samples.Max(Math.Abs);
             if (peak == 0) return samples;
             return samples.Select(s => s / peak).ToArray();
+        }
+
+        public static double[] PadToPowerOfTwo(double[] samples)
+        {
+            int nextPow2 = (int)Math.Pow(2, Math.Ceiling(Math.Log2(samples.Length)));
+            if (nextPow2 == samples.Length) return samples;
+
+            double[] padded = new double[nextPow2];
+            Array.Copy(samples, padded, samples.Length);
+
+            return padded;
         }
     }
 }

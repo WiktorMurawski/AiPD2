@@ -36,18 +36,24 @@
             viewToolStripMenuItem = new ToolStripMenuItem();
             resetPlotsToolStripMenuItem = new ToolStripMenuItem();
             MainSplitContainer = new SplitContainer();
-            VolumePlot = new ScottPlot.WinForms.FormsPlot();
+            formsPlot6 = new ScottPlot.WinForms.FormsPlot();
+            formsPlot5 = new ScottPlot.WinForms.FormsPlot();
+            formsPlot4 = new ScottPlot.WinForms.FormsPlot();
+            WindowedSignalPlot = new ScottPlot.WinForms.FormsPlot();
+            FFTMagnitudePlot = new ScottPlot.WinForms.FormsPlot();
             WavePlot = new ScottPlot.WinForms.FormsPlot();
+            label1 = new Label();
+            WindowType_ComboBox = new ComboBox();
+            HopSize_NumericUpDown = new NumericUpDown();
+            HopSize_Label = new Label();
             FrameSize_Label = new Label();
             FrameSize_ComboBox = new ComboBox();
-            HopSize_Label = new Label();
-            numericUpDown1 = new NumericUpDown();
             MainMenu_MenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)MainSplitContainer).BeginInit();
             MainSplitContainer.Panel1.SuspendLayout();
             MainSplitContainer.Panel2.SuspendLayout();
             MainSplitContainer.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)HopSize_NumericUpDown).BeginInit();
             SuspendLayout();
             // 
             // MainMenu_MenuStrip
@@ -68,19 +74,19 @@
             // LoadAudioFile_ToolStripMenuItem
             // 
             LoadAudioFile_ToolStripMenuItem.Name = "LoadAudioFile_ToolStripMenuItem";
-            LoadAudioFile_ToolStripMenuItem.Size = new Size(180, 22);
+            LoadAudioFile_ToolStripMenuItem.Size = new Size(149, 22);
             LoadAudioFile_ToolStripMenuItem.Text = "Load WAV File";
             LoadAudioFile_ToolStripMenuItem.Click += LoadAudioFile_ToolStripMenuItem_Click;
             // 
             // toolStripMenuItem1
             // 
             toolStripMenuItem1.Name = "toolStripMenuItem1";
-            toolStripMenuItem1.Size = new Size(177, 6);
+            toolStripMenuItem1.Size = new Size(146, 6);
             // 
             // Exit_ToolStripMenuItem
             // 
             Exit_ToolStripMenuItem.Name = "Exit_ToolStripMenuItem";
-            Exit_ToolStripMenuItem.Size = new Size(180, 22);
+            Exit_ToolStripMenuItem.Size = new Size(149, 22);
             Exit_ToolStripMenuItem.Text = "Exit";
             Exit_ToolStripMenuItem.Click += Exit_ToolStripMenuItem_Click;
             // 
@@ -94,7 +100,7 @@
             // resetPlotsToolStripMenuItem
             // 
             resetPlotsToolStripMenuItem.Name = "resetPlotsToolStripMenuItem";
-            resetPlotsToolStripMenuItem.Size = new Size(180, 22);
+            resetPlotsToolStripMenuItem.Size = new Size(131, 22);
             resetPlotsToolStripMenuItem.Text = "Reset Plots";
             resetPlotsToolStripMenuItem.Click += ResetPlots_ToolStripMenuItem_Click;
             // 
@@ -110,13 +116,19 @@
             MainSplitContainer.Panel1.AutoScroll = true;
             MainSplitContainer.Panel1.AutoScrollMinSize = new Size(20, 0);
             MainSplitContainer.Panel1.BackColor = Color.White;
-            MainSplitContainer.Panel1.Controls.Add(VolumePlot);
+            MainSplitContainer.Panel1.Controls.Add(formsPlot6);
+            MainSplitContainer.Panel1.Controls.Add(formsPlot5);
+            MainSplitContainer.Panel1.Controls.Add(formsPlot4);
+            MainSplitContainer.Panel1.Controls.Add(WindowedSignalPlot);
+            MainSplitContainer.Panel1.Controls.Add(FFTMagnitudePlot);
             MainSplitContainer.Panel1.Controls.Add(WavePlot);
             // 
             // MainSplitContainer.Panel2
             // 
             MainSplitContainer.Panel2.BackColor = SystemColors.Control;
-            MainSplitContainer.Panel2.Controls.Add(numericUpDown1);
+            MainSplitContainer.Panel2.Controls.Add(label1);
+            MainSplitContainer.Panel2.Controls.Add(WindowType_ComboBox);
+            MainSplitContainer.Panel2.Controls.Add(HopSize_NumericUpDown);
             MainSplitContainer.Panel2.Controls.Add(HopSize_Label);
             MainSplitContainer.Panel2.Controls.Add(FrameSize_Label);
             MainSplitContainer.Panel2.Controls.Add(FrameSize_ComboBox);
@@ -126,15 +138,56 @@
             MainSplitContainer.SplitterDistance = 650;
             MainSplitContainer.TabIndex = 1;
             // 
-            // VolumePlot
+            // formsPlot6
             // 
-            VolumePlot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            VolumePlot.BackColor = Color.White;
-            VolumePlot.Location = new Point(3, 203);
-            VolumePlot.Margin = new Padding(3, 0, 3, 0);
-            VolumePlot.Name = "VolumePlot";
-            VolumePlot.Size = new Size(502, 200);
-            VolumePlot.TabIndex = 1;
+            formsPlot6.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            formsPlot6.BackColor = Color.White;
+            formsPlot6.Location = new Point(3, 1003);
+            formsPlot6.Margin = new Padding(3, 0, 3, 0);
+            formsPlot6.Name = "formsPlot6";
+            formsPlot6.Size = new Size(468, 200);
+            formsPlot6.TabIndex = 5;
+            // 
+            // formsPlot5
+            // 
+            formsPlot5.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            formsPlot5.BackColor = Color.White;
+            formsPlot5.Location = new Point(3, 803);
+            formsPlot5.Margin = new Padding(3, 0, 3, 0);
+            formsPlot5.Name = "formsPlot5";
+            formsPlot5.Size = new Size(468, 200);
+            formsPlot5.TabIndex = 4;
+            // 
+            // formsPlot4
+            // 
+            formsPlot4.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            formsPlot4.BackColor = Color.White;
+            formsPlot4.Location = new Point(3, 603);
+            formsPlot4.Margin = new Padding(3, 0, 3, 0);
+            formsPlot4.Name = "formsPlot4";
+            formsPlot4.Size = new Size(468, 200);
+            formsPlot4.TabIndex = 3;
+            // 
+            // WindowedSignalPlot
+            // 
+            WindowedSignalPlot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            WindowedSignalPlot.BackColor = Color.White;
+            WindowedSignalPlot.Location = new Point(3, 203);
+            WindowedSignalPlot.Margin = new Padding(3, 3, 3, 0);
+            WindowedSignalPlot.Name = "WindowedSignalPlot";
+            WindowedSignalPlot.Size = new Size(468, 200);
+            WindowedSignalPlot.TabIndex = 2;
+            WindowedSignalPlot.Tag = "";
+            // 
+            // FFTMagnitudePlot
+            // 
+            FFTMagnitudePlot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            FFTMagnitudePlot.BackColor = Color.White;
+            FFTMagnitudePlot.Location = new Point(3, 403);
+            FFTMagnitudePlot.Margin = new Padding(3, 0, 3, 0);
+            FFTMagnitudePlot.Name = "FFTMagnitudePlot";
+            FFTMagnitudePlot.Size = new Size(468, 200);
+            FFTMagnitudePlot.TabIndex = 1;
             // 
             // WavePlot
             // 
@@ -143,9 +196,45 @@
             WavePlot.Location = new Point(3, 3);
             WavePlot.Margin = new Padding(3, 3, 3, 0);
             WavePlot.Name = "WavePlot";
-            WavePlot.Size = new Size(502, 200);
+            WavePlot.Size = new Size(468, 200);
             WavePlot.TabIndex = 0;
             WavePlot.Tag = "";
+            // 
+            // label1
+            // 
+            label1.Location = new Point(3, 65);
+            label1.Name = "label1";
+            label1.Size = new Size(87, 23);
+            label1.TabIndex = 7;
+            label1.Text = "Window Type";
+            label1.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // WindowType_ComboBox
+            // 
+            WindowType_ComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            WindowType_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            WindowType_ComboBox.FormattingEnabled = true;
+            WindowType_ComboBox.Location = new Point(123, 65);
+            WindowType_ComboBox.Name = "WindowType_ComboBox";
+            WindowType_ComboBox.Size = new Size(104, 23);
+            WindowType_ComboBox.TabIndex = 6;
+            WindowType_ComboBox.SelectedIndexChanged += WindowType_ComboBox_SelectedIndexChanged;
+            // 
+            // HopSize_NumericUpDown
+            // 
+            HopSize_NumericUpDown.Location = new Point(145, 33);
+            HopSize_NumericUpDown.Name = "HopSize_NumericUpDown";
+            HopSize_NumericUpDown.Size = new Size(82, 23);
+            HopSize_NumericUpDown.TabIndex = 5;
+            // 
+            // HopSize_Label
+            // 
+            HopSize_Label.Location = new Point(3, 33);
+            HopSize_Label.Name = "HopSize_Label";
+            HopSize_Label.Size = new Size(87, 23);
+            HopSize_Label.TabIndex = 3;
+            HopSize_Label.Text = "Hop Size";
+            HopSize_Label.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // FrameSize_Label
             // 
@@ -167,22 +256,6 @@
             FrameSize_ComboBox.TabIndex = 1;
             FrameSize_ComboBox.SelectedIndexChanged += FrameSize_ComboBox_SelectedIndexChanged;
             // 
-            // HopSize_Label
-            // 
-            HopSize_Label.Location = new Point(3, 33);
-            HopSize_Label.Name = "HopSize_Label";
-            HopSize_Label.Size = new Size(87, 23);
-            HopSize_Label.TabIndex = 3;
-            HopSize_Label.Text = "Hop Size";
-            HopSize_Label.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // numericUpDown1
-            // 
-            numericUpDown1.Location = new Point(145, 33);
-            numericUpDown1.Name = "numericUpDown1";
-            numericUpDown1.Size = new Size(82, 23);
-            numericUpDown1.TabIndex = 5;
-            // 
             // MainWindow_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -202,7 +275,7 @@
             MainSplitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)MainSplitContainer).EndInit();
             MainSplitContainer.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)HopSize_NumericUpDown).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -216,12 +289,18 @@
         private ToolStripSeparator toolStripMenuItem1;
         private SplitContainer MainSplitContainer;
         private ScottPlot.WinForms.FormsPlot WavePlot;
-        private ScottPlot.WinForms.FormsPlot VolumePlot;
+        private ScottPlot.WinForms.FormsPlot FFTMagnitudePlot;
         private ToolStripMenuItem viewToolStripMenuItem;
         private ToolStripMenuItem resetPlotsToolStripMenuItem;
         private Label FrameSize_Label;
         private ComboBox FrameSize_ComboBox;
-        private NumericUpDown numericUpDown1;
+        private NumericUpDown HopSize_NumericUpDown;
         private Label HopSize_Label;
+        private Label label1;
+        private ComboBox WindowType_ComboBox;
+        private ScottPlot.WinForms.FormsPlot formsPlot5;
+        private ScottPlot.WinForms.FormsPlot formsPlot4;
+        private ScottPlot.WinForms.FormsPlot WindowedSignalPlot;
+        private ScottPlot.WinForms.FormsPlot formsPlot6;
     }
 }

@@ -1,5 +1,5 @@
 Wyznaczanie i rysowanie wykresów parametrów dźwięku z dziedziny częstotliwości:
-- Głośność (Volume)
+- Volume
 - Frequency Centroid (FC)
 - Effective Bandwidth (BW)
 - Band Energy (BE) and Band Energy Ratio (BER or ERSB)

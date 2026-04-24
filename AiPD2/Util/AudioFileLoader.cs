@@ -5,7 +5,7 @@ namespace AiPD2.Util
 {
     internal static class AudioFileLoader
     {
-        public static (float[] samples, int sampleRate, TimeSpan duration, string fileName) LoadWAVFile(string filePath)
+        public static (double[] samples, int sampleRate, TimeSpan duration, string fileName) LoadWAVFile(string filePath)
         {
 
             using var reader = new AudioFileReader(filePath);
@@ -22,9 +22,14 @@ namespace AiPD2.Util
             string fileName = Path.GetFileName(filePath);
 
             int totalSamples = (int)(reader.Length / reader.WaveFormat.Channels / sizeof(float));
-            float[] samples = new float[totalSamples];
 
-            int samplesRead = monoProvider.Read(samples, 0, totalSamples);
+            float[] floatSamples = new float[totalSamples];
+            int samplesRead = monoProvider.Read(floatSamples, 0, totalSamples);
+
+            if (samplesRead < totalSamples)
+                throw new Exception($"Przeczytano {samplesRead} próbek, oczekiwano {totalSamples}");
+
+            double[] samples = Array.ConvertAll(floatSamples, s => (double)s);
 
             if (samplesRead < totalSamples)
             {
