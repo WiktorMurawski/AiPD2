@@ -9,7 +9,7 @@ namespace AiPD2.Models
 
         private int _frameSize { get; set; } = 256;
         private int _hopSize { get; set; } = 128;
-        private WindowType _windowType { get; set; } = WindowType.Hamming;
+        private WindowType _windowType { get; set; } = WindowType.Rectangular;
         private bool _removeDCOffset = true;
         private bool _normalize = true;
 

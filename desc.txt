@@ -1,0 +1,30 @@
+Vol(n) = \frac{1}{N} \sum_{k=0}^{N-1} S^2_n(k)
+where S is the continuous spectrum at a given time t, Sn is the discrete spectrum at a given frame n, and N is the size of the discrete analysis window.
+
+
+
+This feature is related to the human sensation of the brightness of a sound. This feature is the “balancing point” of the spectral power distribution. It is related to the human sensation of the brightness of a sound and gives discriminating results for music and speech, as well as for voiced and unvoiced speech.
+FC(n) = \frac { \int_{0}^{inf} \omega S_n(\omega) d\omega } { \int_{0}^{inf} S_n(\omega) d\omega }
+where S_n(ω) denote the spectrum of the nth frame (obtained from a Fourier Transform calculation) and ω represents the angular frequency.
+This feature has a high correlation with the Zero Crossing Rate (ZCR) feature.
+
+
+
+Directly related to the frequency centroid and using the previously computed power
+spectral density, it is also possible to calculate its standard deviation that represents a measure
+of the signal effective bandwidth:
+BW^2(n) = \frac { \inf_{0}^{inf} (\omega - FC(n))^2 S_n^2(\omega) d\omega} { \inf_{0}^{inf} S_n^2(\omega) d\omega}
+where S_n(\omega) denotes the spectrum of the nth frame (obtained from a Fourier Transform calculation), \omega represents the angular frequency and FC(n) represents the frequency centroid value.
+
+
+
+To adapt the result to the perceptual property of the human ears it is used the Ratio of Energy in a frequency subband (ERSB). The entire frequency band is divided into four subbands, each consisting of the same number of critical bands, where the critical bands correspond to cochlear filters in the human auditory model. The band energy is the energy content of a signal, at a given time, in a band of frequencies. It can be computed from the spectrogram as:
+BE_{[f_0,f_1]}(t) = \frac {\inf_{f_0}^{f_1} S_t^2(f) df} {\inf w(\tau) d\tau}
+where f_0 and f_1 are the bounds of the frequency band, St is the spectrum at a given time t, and w the analysis window.
+
+Considering that the energy distribution in different frequency bands varies quite significantly among different audio signals, it is also possible to use as frequency domain
+features the ratios between the energies at the different subbands and the signal’s total energy. This is known as the Band energy Ratio(BER) or as Energy Ratio Subband (ERSB), and can be defined as the proportion of energy in each frequency band to the total volume of the signal:
+ERSB_{[f_0,f_1]}(t) = BER_{[f_0,f_1]}(t) = \frac{BE}
+Having in mind the perceptual property of the human ear, proposes that the entire frequency band is divided into four sub-bands, each consisting of the same number of critical
+bands (critical bands correspond to cochlear filters in the human auditory model): 0-630 Hz, 630-1720 Hz, 1720-4400 Hz and 4400-11025 Hz (considering a sampling rate of 22050 Hz). Because the summation of the four ERSBs is always one, only the first three are normally used as audio features, and are referred as ERSB1, ERSB2, and ERSB3, respectively.
+

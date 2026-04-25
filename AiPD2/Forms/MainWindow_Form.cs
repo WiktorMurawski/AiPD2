@@ -16,13 +16,33 @@ namespace AiPD2.Forms
         public MainWindow_Form()
         {
             InitializeComponent();
-            this.Text = WINDOW_NAME;
 
-            SetupComboBoxes();
-            SetupPlots();
+            Setup();
+        }
+
+        private void AnalyzeAudio()
+        {
+            if (CurrentWaveform == null) return;
+            Cursor = Cursors.WaitCursor;
+            CurrentAnalysisResult = AudioAnalyzer.Analyze(CurrentWaveform, CurrentAudioProcessingSettings);
+            Cursor = Cursors.Default;
         }
 
         #region SETUP
+        private void Setup()
+        {
+            this.Text = WINDOW_NAME;
+            SetupComboBoxes();
+            SetupPlots();
+            SetDefaultAudioProcessingSettings();
+        }
+
+        private void SetDefaultAudioProcessingSettings()
+        {
+            RemoveDCOffset_Checkbox.Checked = CurrentAudioProcessingSettings.RemoveDCOffset;
+            Normalize_CheckBox.Checked = CurrentAudioProcessingSettings.Normalize;
+        }
+
         private void SetupComboBoxes()
         {
             FrameSize_ComboBox.Items.Clear();
@@ -38,14 +58,19 @@ namespace AiPD2.Forms
 
         private void SetupPlots()
         {
-            Plots.Add((WavePlot, "Waveform"));
-            Plots.Add((WindowedSignalPlot, "Windowed signal"));
-            Plots.Add((FFTMagnitudePlot, "Spectrum"));
-            Plots.Add((formsPlot4, "Volume"));
-            Plots.Add((formsPlot5, "formsPlot5"));
-            Plots.Add((formsPlot6, "formsPlot6"));
+            Plots.Add((Waveform_Plot, "Waveform"));
+            Plots.Add((WindowedWaveform_Plot, "Windowed waveform"));
+            Plots.Add((FFTMagnitude_Plot, "Spectrum"));
+            Plots.Add((Volume_Plot, "Volume"));
+            Plots.Add((FrequencyCentroid_Plot, "Frequency Centroid"));
+            Plots.Add((EffectiveBandwidth_Plot, "Effective Bandwidth"));
+            Plots.Add((BandEnergy_Plot, "Band Energy"));
+            Plots.Add((BandEnergyRatio_Plot, "Band Energy Ratio"));
+            Plots.Add((SpectralFlatnessMeasure_Plot, "Spectral Flatness Measure"));
+            Plots.Add((SpectralCrestFactor_Plot, "Spectral Crest Factor"));
 
             //LinkAllPlotsBidirectionally();
+            LinkTwoPlotsBidirectionally(Waveform_Plot, WindowedWaveform_Plot);
 
             foreach (var (plot, title) in Plots)
             {
@@ -71,16 +96,10 @@ namespace AiPD2.Forms
             }
         }
 
-        private void LinkAllPlotsBidirectionally()
+        private void LinkTwoPlotsBidirectionally(FormsPlot plot1, FormsPlot plot2)
         {
-            for (int i = 0; i < Plots.Count; i++)
-            {
-                for (int j = 0; j < Plots.Count; j++)
-                {
-                    if (i == j) continue;
-                    Plots[i].Item1.Plot.Axes.Link(Plots[j].Item1.Plot, x: true, y: false);
-                }
-            }
+            plot1.Plot.Axes.Link(plot2.Plot, x: true, y: false);
+            plot2.Plot.Axes.Link(plot1.Plot, x: true, y: false);
         }
         #endregion
 
@@ -125,11 +144,75 @@ namespace AiPD2.Forms
                 this.Text = WINDOW_NAME + " - " + CurrentWaveform?.FileName;
 
                 AnalyzeAudio();
-                DisplayCalculatedParams();
+                DisplayPlots();
             }
         }
         #endregion
 
+        #region PLOTS
+        private void DisplayPlots()
+        {
+            if (CurrentWaveform == null) return;
+
+            PlotSignals();
+        }
+
+        private void PlotSignals()
+        {
+            if (CurrentWaveform == null) return;
+            if (CurrentAnalysisResult == null) return;
+
+            PlotSignalOnPlot(Waveform_Plot, CurrentWaveform.Samples, ScottPlot.Colors.Blue, step: 1.0 / CurrentWaveform.SampleRate);
+
+            PlotSignalOnPlot(WindowedWaveform_Plot, CurrentAnalysisResult.WindowedWaveform, ScottPlot.Colors.Blue, step: 1.0 / CurrentWaveform.SampleRate);
+
+            PlotSignalOnPlot(FFTMagnitude_Plot, CurrentAnalysisResult.FullSignalSpectrum, ScottPlot.Colors.Red);
+            PlotSignalOnPlot(Volume_Plot, CurrentAnalysisResult.Volume, ScottPlot.Colors.Red);
+            PlotSignalOnPlot(FrequencyCentroid_Plot, CurrentAnalysisResult.FrequencyCentroid, ScottPlot.Colors.Red);
+            PlotSignalOnPlot(EffectiveBandwidth_Plot, CurrentAnalysisResult.EffectiveBandwidth, ScottPlot.Colors.Red);
+            string[] labels = FrequencyBands.Bands.Select(b => b.Label).ToArray();
+            PlotSignalsOnPlot(BandEnergy_Plot, CurrentAnalysisResult.BandEnergy, labels, ScottPlot.Colors.Red);
+            PlotSignalsOnPlot(BandEnergyRatio_Plot, CurrentAnalysisResult.BandEnergyRatio, labels, ScottPlot.Colors.Red);
+            PlotSignalsOnPlot(SpectralFlatnessMeasure_Plot, CurrentAnalysisResult.SpectralFlatnessMeasure, labels, ScottPlot.Colors.Red);
+            PlotSignalsOnPlot(SpectralCrestFactor_Plot, CurrentAnalysisResult.SpectralCrestFactor, labels, ScottPlot.Colors.Red);
+
+            //Waveform_Plot.Plot.Axes.AutoScale();
+            //Waveform_Plot.Refresh();
+        }
+
+        private void PlotSignalOnPlot(FormsPlot plot, double[] data, ScottPlot.Color color, double step = 1.0)
+        {
+            if (plot == null || data == null) throw new ArgumentNullException();
+            if (CurrentAnalysisResult == null) return;
+
+            plot.Plot.Clear();
+
+            var signal = plot.Plot.Add.Signal(data, step);
+            signal.Color = color;
+
+            plot.Plot.Axes.AutoScale();
+            plot.Refresh();
+        }
+
+        private void PlotSignalsOnPlot(FormsPlot plot, double[][] data, string[] labels, ScottPlot.Color color, double step = 1.0)
+        {
+            plot.Plot.Clear();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                var signal = plot.Plot.Add.Signal(data[i]);
+                signal.LegendText = labels[i];
+            }
+
+            plot.Plot.ShowLegend();
+            //plot.Plot.Axes.Bottom.Label.Text = "Frame";
+            //plot.Plot.Axes.Left.Label.Text = "Energy Ratio";
+            plot.Plot.Axes.AutoScale();
+            plot.Refresh();
+        }
+        #endregion
+
+        #region EVENTS
         private void FrameSize_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox cb = (ComboBox)sender;
@@ -137,11 +220,10 @@ namespace AiPD2.Forms
             int selectedValue = (int)cb.SelectedItem;
 
             CurrentAudioProcessingSettings.FrameSize = selectedValue;
-            Cursor = Cursors.WaitCursor;
-            //CurrentWaveform.FrameSizeChanged();
-            Cursor = Cursors.Default;
+            HopSize_NumericUpDown.Maximum = selectedValue;
 
-            DisplayCalculatedParams();
+            AnalyzeAudio();
+            DisplayPlots();
         }
         private void WindowType_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -150,106 +232,36 @@ namespace AiPD2.Forms
             WindowType selectedValue = (WindowType)cb.SelectedItem;
 
             CurrentAudioProcessingSettings.WindowType = selectedValue;
-            Cursor = Cursors.WaitCursor;
+
             AnalyzeAudio();
-            Cursor = Cursors.Default;
-
-            DisplayCalculatedParams();
+            DisplayPlots();
         }
 
-        private void AnalyzeAudio()
+        private void HopSize_NumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (CurrentWaveform == null) return;
+            NumericUpDown nud = (NumericUpDown)sender;
+            int selectedValue = (int)nud.Value;
 
-            CurrentAnalysisResult = AudioAnalyzer.Analyze(CurrentWaveform, CurrentAudioProcessingSettings);
+            CurrentAudioProcessingSettings.HopSize = selectedValue;
+
+            AnalyzeAudio();
+            DisplayPlots();
         }
 
-        private void DisplayCalculatedParams()
+        private void RemoveDCOffset_Checkbox_CheckedChanged(object sender, EventArgs e)
         {
-            if (CurrentWaveform == null) return;
-
-            PlotSignals();
+            CurrentAudioProcessingSettings.RemoveDCOffset = RemoveDCOffset_Checkbox.Checked;
+            AnalyzeAudio();
+            DisplayPlots();
         }
 
-        private void DisplayOnPlot(FormsPlot plot, double[] data, ScottPlot.Color color, double step = 1.0)
+        private void Normalize_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (plot == null || data == null) throw new ArgumentNullException();
-            if (CurrentAnalysisResult == null) return;
-
-            plot.Plot.Clear();
-
-            var signal = plot.Plot.Add.Signal(data, step);
-
-            plot.Plot.Axes.AutoScale();
-            plot.Refresh();
+            CurrentAudioProcessingSettings.Normalize = Normalize_CheckBox.Checked;
+            AnalyzeAudio();
+            DisplayPlots();
         }
+        #endregion
 
-        private void PlotSignals()
-        {
-            if (CurrentWaveform == null) return;
-            if (CurrentAnalysisResult == null) return;
-
-            DisplayAudioWaveOnPlot();
-
-            DisplayOnPlot(WindowedSignalPlot, CurrentAnalysisResult.WindowedSignal, ScottPlot.Colors.Red, step: 1.0 / CurrentWaveform.SampleRate);
-            DisplayOnPlot(FFTMagnitudePlot, CurrentAnalysisResult.FullSignalSpectrum, ScottPlot.Colors.Red);
-
-            //DisplayTimeParamsSignalOnPlot(VolumePlot, CurrentAudioModel.TimeParams.Volume, Colors.Red);
-            //DisplayTimeParamsSignalOnPlot(STEPlot, CurrentAudioModel.TimeParams.ShortTimeEnergy, Colors.DarkRed);
-            //DisplayTimeParamsSignalOnPlot(ZCRPlot, CurrentAudioModel.TimeParams.ZeroCrossingRate, Colors.Blue);
-            //DisplayTimeParamsSignalOnPlot(SRPlot, CurrentAudioModel.TimeParams.SilentRatio, Colors.DarkCyan);
-            //DisplayTimeParamsSignalOnPlot(VoicedRatioPlot, CurrentAudioModel.TimeParams.VoicedRatio, Colors.Purple);
-            //DisplayTimeParamsSignalOnPlot(FFAutocorrelationPlot, CurrentAudioModel.TimeParams.FundamentalFrequencyAutocorrelation, Colors.Green);
-            //DisplayTimeParamsSignalOnPlot(FFAMDFPlot, CurrentAudioModel.TimeParams.FundamentalFrequencyAMDF, Colors.Green);
-        }
-
-        private void DisplayAudioWaveOnPlot()
-        {
-            if (CurrentWaveform == null)
-                return;
-
-            WavePlot.Plot.Clear();
-
-            double step = 1.0 / CurrentWaveform.SampleRate;
-
-            var signal = WavePlot.Plot.Add.Signal(
-                CurrentWaveform.Samples,
-                step);
-
-            signal.Color = ScottPlot.Colors.Blue;
-            signal.LineWidth = 1.0f;
-
-            //WavePlot.Plot.Title($"{CurrentAudioModel.FileName}");
-            //WavePlot.Plot.XLabel("Czas (sekundy)");
-            //WavePlot.Plot.YLabel("Amplituda");
-
-            WavePlot.Plot.Axes.SetLimitsY(-1.00, 1.00);
-            WavePlot.Plot.Axes.SetLimitsX(0, CurrentWaveform.Duration.TotalSeconds);
-
-            WavePlot.Refresh();
-        }
-
-        private void DisplayTimeParamsSignalOnPlot(FormsPlot plot, double[] paramSignal, ScottPlot.Color color)
-        {
-            ////if (CurrentAudioModel?.TimeParams == null || paramSignal.Length == 0)
-            ////    return;
-
-            //plot.Plot.Clear();
-
-            //double step = (double)AudioModel.FrameSize / CurrentAudioModel.SampleRate;
-            ////var timeParams = CurrentAudioModel.TimeParams;
-            //var signal = plot.Plot.Add.Signal(
-            //    paramSignal,
-            //    step);
-
-            //signal.Data.XOffset = step / 2;
-
-            //signal.Color = color;
-            //signal.LineWidth = 1.0f;
-
-            //plot.Plot.Axes.AutoScaleY();
-            //plot.Plot.Axes.SetLimitsX(0, CurrentAudioModel.Duration.TotalSeconds);
-            plot.Refresh();
-        }
     }
 }
