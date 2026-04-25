@@ -1,0 +1,18 @@
+Wyznaczanie i rysowanie wykresów parametrów dźwięku z dziedziny częstotliwości:
+- Volume
+- Frequency Centroid (FC)
+- Effective Bandwidth (BW)
+- Band Energy (BE) and Band Energy Ratio (BER or ERSB)
+- Spectral Flatness Measure (SFM)
+- Spectral Crest Factor (SCF)
+Rysowanie widma częstotliwościowego poprzez zastosowanie FFT dla całego sygnału lub dla konkretnej ramki
+Zastosowanie na takiej ramce/sygnale funkcji okienkowej i narysowanie wykresu w dziedzienie czasu, oraz w dziedzinie czestotliowsci po zastosowaniu funkcji okna
+Wybor funkcji okienkowych:
+- okno prostokątne
+- okno trójkątne
+- okno Hamminga
+- okno van Hanna
+- okno Blackmana
+
+
+

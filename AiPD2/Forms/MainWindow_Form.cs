@@ -68,6 +68,7 @@ namespace AiPD2.Forms
             Plots.Add((BandEnergyRatio_Plot, "Band Energy Ratio"));
             Plots.Add((SpectralFlatnessMeasure_Plot, "Spectral Flatness Measure"));
             Plots.Add((SpectralCrestFactor_Plot, "Spectral Crest Factor"));
+            Plots.Add((FundamentalFrequency_Plot, "Fundamental Frequency"));
 
             //LinkAllPlotsBidirectionally();
             LinkTwoPlotsBidirectionally(Waveform_Plot, WindowedWaveform_Plot);
@@ -170,11 +171,14 @@ namespace AiPD2.Forms
             PlotSignalOnPlot(Volume_Plot, CurrentAnalysisResult.Volume, ScottPlot.Colors.Red);
             PlotSignalOnPlot(FrequencyCentroid_Plot, CurrentAnalysisResult.FrequencyCentroid, ScottPlot.Colors.Red);
             PlotSignalOnPlot(EffectiveBandwidth_Plot, CurrentAnalysisResult.EffectiveBandwidth, ScottPlot.Colors.Red);
+
             string[] labels = FrequencyBands.Bands.Select(b => b.Label).ToArray();
             PlotSignalsOnPlot(BandEnergy_Plot, CurrentAnalysisResult.BandEnergy, labels, ScottPlot.Colors.Red);
             PlotSignalsOnPlot(BandEnergyRatio_Plot, CurrentAnalysisResult.BandEnergyRatio, labels, ScottPlot.Colors.Red);
             PlotSignalsOnPlot(SpectralFlatnessMeasure_Plot, CurrentAnalysisResult.SpectralFlatnessMeasure, labels, ScottPlot.Colors.Red);
             PlotSignalsOnPlot(SpectralCrestFactor_Plot, CurrentAnalysisResult.SpectralCrestFactor, labels, ScottPlot.Colors.Red);
+
+            PlotSignalOnPlot(FundamentalFrequency_Plot, CurrentAnalysisResult.FundamentalFrequency, ScottPlot.Colors.Green);
 
             //Waveform_Plot.Plot.Axes.AutoScale();
             //Waveform_Plot.Refresh();

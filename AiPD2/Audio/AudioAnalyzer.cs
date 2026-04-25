@@ -43,6 +43,11 @@ namespace AiPD2.Audio
             double[][] spectralFlatnessMeasure = FeatureExtractor.ComputeSpectralFlatnessMeasure(frameLevelSpectra, waveform.SampleRate, settings.FrameSize);
             double[][] spectralCrestFactor = FeatureExtractor.ComputeSpectralCrestFactor(frameLevelSpectra, waveform.SampleRate, settings.FrameSize);
 
+            double[] fundamentalFrequency = frames
+                .Select(f => CepstrumProcessor.ComputeRealCepstrum(f))
+                .Select((c, i) => CepstrumProcessor.EstimateFundamentalFrequency(c, frames[i], waveform.SampleRate, settings.FrameSize))
+                .ToArray();
+
             return new AnalysisResult
             {
                 WindowedWaveform = windowedSignal,
@@ -55,7 +60,25 @@ namespace AiPD2.Audio
                 BandEnergyRatio = bandEnergyRatio,
                 SpectralFlatnessMeasure = spectralFlatnessMeasure,
                 SpectralCrestFactor = spectralCrestFactor,
+                FundamentalFrequency = fundamentalFrequency,
             };
+        }
+
+        public static double[] MedianFilter(double[] values, int windowSize = 5)
+        {
+            double[] result = new double[values.Length];
+            int half = windowSize / 2;
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                int start = Math.Max(0, i - half);
+                int end = Math.Min(values.Length - 1, i + half);
+                double[] window = values[start..(end + 1)];
+                Array.Sort(window);
+                result[i] = window[window.Length / 2];
+            }
+
+            return result;
         }
     }
 }
