@@ -1,9 +1,16 @@
-﻿using AiPD2.Models;
-
-namespace AiPD2.Audio
+﻿namespace AiPD2.Audio
 {
     internal static class Windowing
     {
+        internal enum WindowType
+        {
+            Rectangular,
+            Triangular,
+            Hamming,
+            Hanning,
+            Blackman,
+        }
+
         public static Windows.IWindow CreateWindow(WindowType windowType) => windowType switch
         {
             WindowType.Rectangular => new Windows.RectangularWindow(),

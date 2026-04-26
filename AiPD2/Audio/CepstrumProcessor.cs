@@ -41,5 +41,22 @@
 
             return (double)sampleRate / peakTau; // f0 = 1/τ_max
         }
+
+        public static double[] MedianFilter(double[] values, int windowSize = 5)
+        {
+            double[] result = new double[values.Length];
+            int half = windowSize / 2;
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                int start = Math.Max(0, i - half);
+                int end = Math.Min(values.Length - 1, i + half);
+                double[] window = values[start..(end + 1)];
+                Array.Sort(window);
+                result[i] = window[window.Length / 2];
+            }
+
+            return result;
+        }
     }
 }

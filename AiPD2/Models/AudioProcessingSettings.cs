@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using static AiPD2.Audio.Windowing;
 
 namespace AiPD2.Models
 {
@@ -45,14 +46,5 @@ namespace AiPD2.Models
 
         private void OnChanged([CallerMemberName] string? prop = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
-
-    internal enum WindowType
-    {
-        Rectangular,
-        Triangular,
-        Hamming,
-        Hanning,
-        Blackman,
     }
 }

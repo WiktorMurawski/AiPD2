@@ -12,6 +12,7 @@ namespace AiPD2.Forms
         private Waveform? CurrentWaveform { get; set; }
         private AnalysisResult? CurrentAnalysisResult { get; set; }
         private AudioProcessingSettings CurrentAudioProcessingSettings { get; set; } = new AudioProcessingSettings();
+        private VisualizationSettings CurrentVisualizationSettings { get; set; } = new VisualizationSettings();
 
         public MainWindow_Form()
         {
@@ -26,6 +27,8 @@ namespace AiPD2.Forms
             Cursor = Cursors.WaitCursor;
             CurrentAnalysisResult = AudioAnalyzer.Analyze(CurrentWaveform, CurrentAudioProcessingSettings);
             Cursor = Cursors.Default;
+
+            SelectedFrame_NumericUpDown.Maximum = CurrentAnalysisResult.WindowedFrames.Length - 1;
         }
 
         #region SETUP
@@ -34,29 +37,30 @@ namespace AiPD2.Forms
             this.Text = WINDOW_NAME;
             SetupComboBoxes();
             SetupPlots();
-            SetDefaultAudioProcessingSettings();
+            SetDefaults();
         }
 
-        private void SetDefaultAudioProcessingSettings()
+        private void SetDefaults()
         {
             RemoveDCOffset_Checkbox.Checked = CurrentAudioProcessingSettings.RemoveDCOffset;
             Normalize_CheckBox.Checked = CurrentAudioProcessingSettings.Normalize;
+            SelectedFrame_NumericUpDown.Value = CurrentVisualizationSettings.SelectedFrameIndex;
         }
 
         private void SetupComboBoxes()
         {
             FrameSize_ComboBox.Items.Clear();
-            FrameSize_ComboBox.Items.AddRange(new object[] { 128, 256, 512, 1024 });
+            FrameSize_ComboBox.Items.AddRange(new object[] { 128, 256, 512, 1024, 2048 });
             FrameSize_ComboBox.SelectedIndex = 1;
             CurrentAudioProcessingSettings.FrameSize = (int)FrameSize_ComboBox.SelectedItem!;
 
             WindowType_ComboBox.Items.Clear();
-            WindowType_ComboBox.Items.AddRange(Enum.GetValues(typeof(WindowType)).Cast<object>().ToArray());
+            WindowType_ComboBox.Items.AddRange(Enum.GetValues(typeof(Windowing.WindowType)).Cast<object>().ToArray());
             WindowType_ComboBox.SelectedIndex = 0;
-            CurrentAudioProcessingSettings.WindowType = (WindowType)WindowType_ComboBox.SelectedItem!;
+            CurrentAudioProcessingSettings.WindowType = (Windowing.WindowType)WindowType_ComboBox.SelectedItem!;
         }
 
-        private void SetupPlots()
+        private void CreatePlotsList()
         {
             Plots.Add((Waveform_Plot, "Waveform"));
             Plots.Add((WindowedWaveform_Plot, "Windowed waveform"));
@@ -69,6 +73,14 @@ namespace AiPD2.Forms
             Plots.Add((SpectralFlatnessMeasure_Plot, "Spectral Flatness Measure"));
             Plots.Add((SpectralCrestFactor_Plot, "Spectral Crest Factor"));
             Plots.Add((FundamentalFrequency_Plot, "Fundamental Frequency"));
+            Plots.Add((WindowedFrame_Plot, "Windowed Frame"));
+            Plots.Add((FrameSpectrum_Plot, "Frame Spectrum"));
+            Plots.Add((FrameCepstrum_Plot, "Frame Cepstrum"));
+        }
+
+        private void SetupPlots()
+        {
+            CreatePlotsList();
 
             //LinkAllPlotsBidirectionally();
             LinkTwoPlotsBidirectionally(Waveform_Plot, WindowedWaveform_Plot);
@@ -167,7 +179,7 @@ namespace AiPD2.Forms
 
             PlotSignalOnPlot(WindowedWaveform_Plot, CurrentAnalysisResult.WindowedWaveform, ScottPlot.Colors.Blue, step: 1.0 / CurrentWaveform.SampleRate);
 
-            PlotSignalOnPlot(FFTMagnitude_Plot, CurrentAnalysisResult.FullSignalSpectrum, ScottPlot.Colors.Red);
+            PlotSignalOnPlot(FFTMagnitude_Plot, CurrentAnalysisResult.FullSignalSpectrum, ScottPlot.Colors.Red, step: (double)CurrentWaveform.SampleRate / CurrentAnalysisResult.PaddedLength);
             PlotSignalOnPlot(Volume_Plot, CurrentAnalysisResult.Volume, ScottPlot.Colors.Red);
             PlotSignalOnPlot(FrequencyCentroid_Plot, CurrentAnalysisResult.FrequencyCentroid, ScottPlot.Colors.Red);
             PlotSignalOnPlot(EffectiveBandwidth_Plot, CurrentAnalysisResult.EffectiveBandwidth, ScottPlot.Colors.Red);
@@ -179,6 +191,8 @@ namespace AiPD2.Forms
             PlotSignalsOnPlot(SpectralCrestFactor_Plot, CurrentAnalysisResult.SpectralCrestFactor, labels, ScottPlot.Colors.Red);
 
             PlotSignalOnPlot(FundamentalFrequency_Plot, CurrentAnalysisResult.FundamentalFrequency, ScottPlot.Colors.Green);
+
+            UpdateFramePlots();
 
             //Waveform_Plot.Plot.Axes.AutoScale();
             //Waveform_Plot.Refresh();
@@ -193,6 +207,21 @@ namespace AiPD2.Forms
 
             var signal = plot.Plot.Add.Signal(data, step);
             signal.Color = color;
+
+            plot.Plot.Axes.AutoScale();
+            plot.Refresh();
+        }
+
+        private void PlotScatterOnPlot(FormsPlot plot, double[] x_data, double[] y_data, ScottPlot.Color color, double step = 1.0)
+        {
+            if (plot == null || x_data == null || y_data == null) throw new ArgumentNullException();
+            if (CurrentAnalysisResult == null) return;
+
+            plot.Plot.Clear();
+
+            var scatter = plot.Plot.Add.Scatter(x_data, y_data);
+            scatter.Color = color;
+            scatter.MarkerSize = 0;
 
             plot.Plot.Axes.AutoScale();
             plot.Refresh();
@@ -214,6 +243,27 @@ namespace AiPD2.Forms
             plot.Plot.Axes.AutoScale();
             plot.Refresh();
         }
+
+        private void UpdateFramePlots()
+        {
+            if (CurrentAnalysisResult == null || CurrentWaveform == null) return;
+            int frameIndex = CurrentVisualizationSettings.SelectedFrameIndex;
+            if (frameIndex < 0 || frameIndex >= CurrentAnalysisResult.WindowedFrames.Length) return;
+
+            PlotSignalOnPlot(WindowedFrame_Plot, CurrentAnalysisResult.WindowedFrames[frameIndex], ScottPlot.Colors.Orange);
+            PlotSignalOnPlot(FrameSpectrum_Plot, CurrentAnalysisResult.FrameLevelSpectra[frameIndex], ScottPlot.Colors.Orange, step: (double)CurrentWaveform.SampleRate / CurrentAudioProcessingSettings.FrameSize);
+
+            int maxHz = 400;
+            int minHz = 50;
+            int tauMin = (int)Math.Floor((double)CurrentWaveform.SampleRate / maxHz);
+            int tauMax = (int)Math.Floor((double)CurrentWaveform.SampleRate / minHz);
+            tauMax = Math.Min(tauMax, CurrentAnalysisResult.Cepstrum[frameIndex].Length - 1);
+            double[] cepstrum = CurrentAnalysisResult.Cepstrum[frameIndex][tauMin..(tauMax + 1)];
+            double[] quefrencies = Enumerable.Range(tauMin, cepstrum.Length)
+                .Select(i => (double)i / CurrentWaveform.SampleRate)
+                .ToArray();
+            PlotScatterOnPlot(FrameCepstrum_Plot, quefrencies, cepstrum, ScottPlot.Colors.Orange);
+        }
         #endregion
 
         #region EVENTS
@@ -233,7 +283,7 @@ namespace AiPD2.Forms
         {
             ComboBox cb = (ComboBox)sender;
             if (cb.SelectedItem is null) return;
-            WindowType selectedValue = (WindowType)cb.SelectedItem;
+            Windowing.WindowType selectedValue = (Windowing.WindowType)cb.SelectedItem;
 
             CurrentAudioProcessingSettings.WindowType = selectedValue;
 
@@ -250,6 +300,16 @@ namespace AiPD2.Forms
 
             AnalyzeAudio();
             DisplayPlots();
+        }
+
+        private void SelectedFrame_NumericUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            NumericUpDown nud = (NumericUpDown)sender;
+            int selectedValue = (int)nud.Value;
+
+            CurrentVisualizationSettings.SelectedFrameIndex = selectedValue;
+
+            UpdateFramePlots();
         }
 
         private void RemoveDCOffset_Checkbox_CheckedChanged(object sender, EventArgs e)

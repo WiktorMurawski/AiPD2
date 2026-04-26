@@ -19,6 +19,7 @@ namespace AiPD2.Audio
 
             // Padding
             processed = Preprocessor.PadToPowerOfTwo(processed);
+            int paddedLength = processed.Length;
 
             // Windowing
             IWindow window = Windowing.CreateWindow(settings.WindowType);
@@ -43,15 +44,20 @@ namespace AiPD2.Audio
             double[][] spectralFlatnessMeasure = FeatureExtractor.ComputeSpectralFlatnessMeasure(frameLevelSpectra, waveform.SampleRate, settings.FrameSize);
             double[][] spectralCrestFactor = FeatureExtractor.ComputeSpectralCrestFactor(frameLevelSpectra, waveform.SampleRate, settings.FrameSize);
 
-            double[] fundamentalFrequency = frames
-                .Select(f => CepstrumProcessor.ComputeRealCepstrum(f))
+            double[][] cepstrum = frames.Select(f => CepstrumProcessor.ComputeRealCepstrum(f)).ToArray();
+
+            double[] rawF0 = cepstrum
                 .Select((c, i) => CepstrumProcessor.EstimateFundamentalFrequency(c, frames[i], waveform.SampleRate, settings.FrameSize))
                 .ToArray();
 
+            double[] fundamentalFrequency = CepstrumProcessor.MedianFilter(rawF0);
+
             return new AnalysisResult
             {
+                PaddedLength = paddedLength,
                 WindowedWaveform = windowedSignal,
                 FullSignalSpectrum = fullSpectrum,
+                WindowedFrames = frames,
                 FrameLevelSpectra = frameLevelSpectra,
                 Volume = volume,
                 FrequencyCentroid = frequencyCentroid,
@@ -61,24 +67,8 @@ namespace AiPD2.Audio
                 SpectralFlatnessMeasure = spectralFlatnessMeasure,
                 SpectralCrestFactor = spectralCrestFactor,
                 FundamentalFrequency = fundamentalFrequency,
+                Cepstrum = cepstrum,
             };
-        }
-
-        public static double[] MedianFilter(double[] values, int windowSize = 5)
-        {
-            double[] result = new double[values.Length];
-            int half = windowSize / 2;
-
-            for (int i = 0; i < values.Length; i++)
-            {
-                int start = Math.Max(0, i - half);
-                int end = Math.Min(values.Length - 1, i + half);
-                double[] window = values[start..(end + 1)];
-                Array.Sort(window);
-                result[i] = window[window.Length / 2];
-            }
-
-            return result;
         }
     }
 }

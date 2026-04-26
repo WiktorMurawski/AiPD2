@@ -36,6 +36,10 @@
             viewToolStripMenuItem = new ToolStripMenuItem();
             resetPlotsToolStripMenuItem = new ToolStripMenuItem();
             MainSplitContainer = new SplitContainer();
+            FrameCepstrum_Plot = new ScottPlot.WinForms.FormsPlot();
+            FrameSpectrum_Plot = new ScottPlot.WinForms.FormsPlot();
+            WindowedFrame_Plot = new ScottPlot.WinForms.FormsPlot();
+            FundamentalFrequency_Plot = new ScottPlot.WinForms.FormsPlot();
             SpectralCrestFactor_Plot = new ScottPlot.WinForms.FormsPlot();
             SpectralFlatnessMeasure_Plot = new ScottPlot.WinForms.FormsPlot();
             BandEnergyRatio_Plot = new ScottPlot.WinForms.FormsPlot();
@@ -46,6 +50,9 @@
             WindowedWaveform_Plot = new ScottPlot.WinForms.FormsPlot();
             FFTMagnitude_Plot = new ScottPlot.WinForms.FormsPlot();
             Waveform_Plot = new ScottPlot.WinForms.FormsPlot();
+            groupBox4 = new GroupBox();
+            label3 = new Label();
+            SelectedFrame_NumericUpDown = new NumericUpDown();
             groupBox3 = new GroupBox();
             label1 = new Label();
             WindowType_ComboBox = new ComboBox();
@@ -57,12 +64,13 @@
             groupBox1 = new GroupBox();
             RemoveDCOffset_Checkbox = new CheckBox();
             Normalize_CheckBox = new CheckBox();
-            FundamentalFrequency_Plot = new ScottPlot.WinForms.FormsPlot();
             MainMenu_MenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)MainSplitContainer).BeginInit();
             MainSplitContainer.Panel1.SuspendLayout();
             MainSplitContainer.Panel2.SuspendLayout();
             MainSplitContainer.SuspendLayout();
+            groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)SelectedFrame_NumericUpDown).BeginInit();
             groupBox3.SuspendLayout();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)HopSize_NumericUpDown).BeginInit();
@@ -129,6 +137,9 @@
             MainSplitContainer.Panel1.AutoScroll = true;
             MainSplitContainer.Panel1.AutoScrollMinSize = new Size(20, 0);
             MainSplitContainer.Panel1.BackColor = Color.White;
+            MainSplitContainer.Panel1.Controls.Add(FrameCepstrum_Plot);
+            MainSplitContainer.Panel1.Controls.Add(FrameSpectrum_Plot);
+            MainSplitContainer.Panel1.Controls.Add(WindowedFrame_Plot);
             MainSplitContainer.Panel1.Controls.Add(FundamentalFrequency_Plot);
             MainSplitContainer.Panel1.Controls.Add(SpectralCrestFactor_Plot);
             MainSplitContainer.Panel1.Controls.Add(SpectralFlatnessMeasure_Plot);
@@ -144,6 +155,7 @@
             // MainSplitContainer.Panel2
             // 
             MainSplitContainer.Panel2.BackColor = SystemColors.Control;
+            MainSplitContainer.Panel2.Controls.Add(groupBox4);
             MainSplitContainer.Panel2.Controls.Add(groupBox3);
             MainSplitContainer.Panel2.Controls.Add(groupBox2);
             MainSplitContainer.Panel2.Controls.Add(groupBox1);
@@ -153,6 +165,46 @@
             MainSplitContainer.SplitterDistance = 650;
             MainSplitContainer.TabIndex = 1;
             // 
+            // FrameCepstrum_Plot
+            // 
+            FrameCepstrum_Plot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            FrameCepstrum_Plot.BackColor = Color.White;
+            FrameCepstrum_Plot.Location = new Point(3, 2603);
+            FrameCepstrum_Plot.Margin = new Padding(3, 0, 3, 0);
+            FrameCepstrum_Plot.Name = "FrameCepstrum_Plot";
+            FrameCepstrum_Plot.Size = new Size(179, 200);
+            FrameCepstrum_Plot.TabIndex = 13;
+            // 
+            // FrameSpectrum_Plot
+            // 
+            FrameSpectrum_Plot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            FrameSpectrum_Plot.BackColor = Color.White;
+            FrameSpectrum_Plot.Location = new Point(3, 2403);
+            FrameSpectrum_Plot.Margin = new Padding(3, 0, 3, 0);
+            FrameSpectrum_Plot.Name = "FrameSpectrum_Plot";
+            FrameSpectrum_Plot.Size = new Size(179, 200);
+            FrameSpectrum_Plot.TabIndex = 12;
+            // 
+            // WindowedFrame_Plot
+            // 
+            WindowedFrame_Plot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            WindowedFrame_Plot.BackColor = Color.White;
+            WindowedFrame_Plot.Location = new Point(3, 2203);
+            WindowedFrame_Plot.Margin = new Padding(3, 0, 3, 0);
+            WindowedFrame_Plot.Name = "WindowedFrame_Plot";
+            WindowedFrame_Plot.Size = new Size(179, 200);
+            WindowedFrame_Plot.TabIndex = 11;
+            // 
+            // FundamentalFrequency_Plot
+            // 
+            FundamentalFrequency_Plot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            FundamentalFrequency_Plot.BackColor = Color.White;
+            FundamentalFrequency_Plot.Location = new Point(3, 2003);
+            FundamentalFrequency_Plot.Margin = new Padding(3, 0, 3, 0);
+            FundamentalFrequency_Plot.Name = "FundamentalFrequency_Plot";
+            FundamentalFrequency_Plot.Size = new Size(179, 200);
+            FundamentalFrequency_Plot.TabIndex = 10;
+            // 
             // SpectralCrestFactor_Plot
             // 
             SpectralCrestFactor_Plot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -160,7 +212,7 @@
             SpectralCrestFactor_Plot.Location = new Point(3, 1803);
             SpectralCrestFactor_Plot.Margin = new Padding(3, 0, 3, 0);
             SpectralCrestFactor_Plot.Name = "SpectralCrestFactor_Plot";
-            SpectralCrestFactor_Plot.Size = new Size(247, 200);
+            SpectralCrestFactor_Plot.Size = new Size(179, 200);
             SpectralCrestFactor_Plot.TabIndex = 9;
             // 
             // SpectralFlatnessMeasure_Plot
@@ -170,7 +222,7 @@
             SpectralFlatnessMeasure_Plot.Location = new Point(3, 1603);
             SpectralFlatnessMeasure_Plot.Margin = new Padding(3, 0, 3, 0);
             SpectralFlatnessMeasure_Plot.Name = "SpectralFlatnessMeasure_Plot";
-            SpectralFlatnessMeasure_Plot.Size = new Size(247, 200);
+            SpectralFlatnessMeasure_Plot.Size = new Size(179, 200);
             SpectralFlatnessMeasure_Plot.TabIndex = 8;
             // 
             // BandEnergyRatio_Plot
@@ -180,7 +232,7 @@
             BandEnergyRatio_Plot.Location = new Point(3, 1403);
             BandEnergyRatio_Plot.Margin = new Padding(3, 0, 3, 0);
             BandEnergyRatio_Plot.Name = "BandEnergyRatio_Plot";
-            BandEnergyRatio_Plot.Size = new Size(247, 200);
+            BandEnergyRatio_Plot.Size = new Size(179, 200);
             BandEnergyRatio_Plot.TabIndex = 7;
             // 
             // BandEnergy_Plot
@@ -190,7 +242,7 @@
             BandEnergy_Plot.Location = new Point(3, 1203);
             BandEnergy_Plot.Margin = new Padding(3, 0, 3, 0);
             BandEnergy_Plot.Name = "BandEnergy_Plot";
-            BandEnergy_Plot.Size = new Size(247, 200);
+            BandEnergy_Plot.Size = new Size(179, 200);
             BandEnergy_Plot.TabIndex = 6;
             // 
             // EffectiveBandwidth_Plot
@@ -200,7 +252,7 @@
             EffectiveBandwidth_Plot.Location = new Point(3, 1003);
             EffectiveBandwidth_Plot.Margin = new Padding(3, 0, 3, 0);
             EffectiveBandwidth_Plot.Name = "EffectiveBandwidth_Plot";
-            EffectiveBandwidth_Plot.Size = new Size(247, 200);
+            EffectiveBandwidth_Plot.Size = new Size(179, 200);
             EffectiveBandwidth_Plot.TabIndex = 5;
             // 
             // FrequencyCentroid_Plot
@@ -210,7 +262,7 @@
             FrequencyCentroid_Plot.Location = new Point(3, 803);
             FrequencyCentroid_Plot.Margin = new Padding(3, 0, 3, 0);
             FrequencyCentroid_Plot.Name = "FrequencyCentroid_Plot";
-            FrequencyCentroid_Plot.Size = new Size(247, 200);
+            FrequencyCentroid_Plot.Size = new Size(179, 200);
             FrequencyCentroid_Plot.TabIndex = 4;
             // 
             // Volume_Plot
@@ -220,7 +272,7 @@
             Volume_Plot.Location = new Point(3, 603);
             Volume_Plot.Margin = new Padding(3, 0, 3, 0);
             Volume_Plot.Name = "Volume_Plot";
-            Volume_Plot.Size = new Size(247, 200);
+            Volume_Plot.Size = new Size(179, 200);
             Volume_Plot.TabIndex = 3;
             // 
             // WindowedWaveform_Plot
@@ -230,7 +282,7 @@
             WindowedWaveform_Plot.Location = new Point(3, 203);
             WindowedWaveform_Plot.Margin = new Padding(3, 3, 3, 0);
             WindowedWaveform_Plot.Name = "WindowedWaveform_Plot";
-            WindowedWaveform_Plot.Size = new Size(247, 200);
+            WindowedWaveform_Plot.Size = new Size(179, 200);
             WindowedWaveform_Plot.TabIndex = 2;
             WindowedWaveform_Plot.Tag = "";
             // 
@@ -241,7 +293,7 @@
             FFTMagnitude_Plot.Location = new Point(3, 403);
             FFTMagnitude_Plot.Margin = new Padding(3, 0, 3, 0);
             FFTMagnitude_Plot.Name = "FFTMagnitude_Plot";
-            FFTMagnitude_Plot.Size = new Size(247, 200);
+            FFTMagnitude_Plot.Size = new Size(179, 200);
             FFTMagnitude_Plot.TabIndex = 1;
             // 
             // Waveform_Plot
@@ -251,9 +303,42 @@
             Waveform_Plot.Location = new Point(3, 3);
             Waveform_Plot.Margin = new Padding(3, 3, 3, 0);
             Waveform_Plot.Name = "Waveform_Plot";
-            Waveform_Plot.Size = new Size(247, 200);
+            Waveform_Plot.Size = new Size(179, 200);
             Waveform_Plot.TabIndex = 0;
             Waveform_Plot.Tag = "";
+            // 
+            // groupBox4
+            // 
+            groupBox4.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox4.Controls.Add(label3);
+            groupBox4.Controls.Add(SelectedFrame_NumericUpDown);
+            groupBox4.Location = new Point(3, 243);
+            groupBox4.Name = "groupBox4";
+            groupBox4.Size = new Size(224, 83);
+            groupBox4.TabIndex = 13;
+            groupBox4.TabStop = false;
+            groupBox4.Text = "Visualization";
+            // 
+            // label3
+            // 
+            label3.Location = new Point(3, 22);
+            label3.Margin = new Padding(3, 2, 3, 2);
+            label3.Name = "label3";
+            label3.Size = new Size(92, 23);
+            label3.TabIndex = 3;
+            label3.Text = "Selected Frame";
+            label3.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // SelectedFrame_NumericUpDown
+            // 
+            SelectedFrame_NumericUpDown.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            SelectedFrame_NumericUpDown.Location = new Point(139, 22);
+            SelectedFrame_NumericUpDown.Maximum = new decimal(new int[] { 256, 0, 0, 0 });
+            SelectedFrame_NumericUpDown.Name = "SelectedFrame_NumericUpDown";
+            SelectedFrame_NumericUpDown.Size = new Size(82, 23);
+            SelectedFrame_NumericUpDown.TabIndex = 5;
+            SelectedFrame_NumericUpDown.Value = new decimal(new int[] { 128, 0, 0, 0 });
+            SelectedFrame_NumericUpDown.ValueChanged += SelectedFrame_NumericUpDown_ValueChanged;
             // 
             // groupBox3
             // 
@@ -262,14 +347,14 @@
             groupBox3.Controls.Add(WindowType_ComboBox);
             groupBox3.Location = new Point(3, 177);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(224, 65);
+            groupBox3.Size = new Size(224, 60);
             groupBox3.TabIndex = 12;
             groupBox3.TabStop = false;
             groupBox3.Text = "Windowing settings";
             // 
             // label1
             // 
-            label1.Location = new Point(0, 21);
+            label1.Location = new Point(3, 21);
             label1.Margin = new Padding(3, 2, 3, 2);
             label1.Name = "label1";
             label1.Size = new Size(83, 23);
@@ -282,9 +367,9 @@
             WindowType_ComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             WindowType_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             WindowType_ComboBox.FormattingEnabled = true;
-            WindowType_ComboBox.Location = new Point(117, 21);
+            WindowType_ComboBox.Location = new Point(120, 21);
             WindowType_ComboBox.Name = "WindowType_ComboBox";
-            WindowType_ComboBox.Size = new Size(104, 23);
+            WindowType_ComboBox.Size = new Size(101, 23);
             WindowType_ComboBox.TabIndex = 6;
             WindowType_ComboBox.SelectedIndexChanged += WindowType_ComboBox_SelectedIndexChanged;
             // 
@@ -380,16 +465,6 @@
             Normalize_CheckBox.UseVisualStyleBackColor = true;
             Normalize_CheckBox.CheckedChanged += Normalize_CheckBox_CheckedChanged;
             // 
-            // FundamentalFrequency_Plot
-            // 
-            FundamentalFrequency_Plot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            FundamentalFrequency_Plot.BackColor = Color.White;
-            FundamentalFrequency_Plot.Location = new Point(3, 2003);
-            FundamentalFrequency_Plot.Margin = new Padding(3, 0, 3, 0);
-            FundamentalFrequency_Plot.Name = "FundamentalFrequency_Plot";
-            FundamentalFrequency_Plot.Size = new Size(247, 200);
-            FundamentalFrequency_Plot.TabIndex = 10;
-            // 
             // MainWindow_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -409,6 +484,8 @@
             MainSplitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)MainSplitContainer).EndInit();
             MainSplitContainer.ResumeLayout(false);
+            groupBox4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)SelectedFrame_NumericUpDown).EndInit();
             groupBox3.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)HopSize_NumericUpDown).EndInit();
@@ -450,5 +527,11 @@
         private ScottPlot.WinForms.FormsPlot SpectralCrestFactor_Plot;
         private ScottPlot.WinForms.FormsPlot SpectralFlatnessMeasure_Plot;
         private ScottPlot.WinForms.FormsPlot FundamentalFrequency_Plot;
+        private GroupBox groupBox4;
+        private Label label3;
+        private NumericUpDown SelectedFrame_NumericUpDown;
+        private ScottPlot.WinForms.FormsPlot FrameCepstrum_Plot;
+        private ScottPlot.WinForms.FormsPlot FrameSpectrum_Plot;
+        private ScottPlot.WinForms.FormsPlot WindowedFrame_Plot;
     }
 }
