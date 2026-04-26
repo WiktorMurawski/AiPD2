@@ -46,3 +46,4 @@ Alternative versions of these basic features can be conceived, as well as non-li
 
 Szacowanie częstotliwości podstawowej odbywa się na podstawie zależności:
 (3) f_0 = \frac {1} {\tau_max}, \tau > 0; C(\tau_max) = max_{\tau} C(\tau)
+

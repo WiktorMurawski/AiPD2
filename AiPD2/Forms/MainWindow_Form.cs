@@ -45,13 +45,14 @@ namespace AiPD2.Forms
             RemoveDCOffset_Checkbox.Checked = CurrentAudioProcessingSettings.RemoveDCOffset;
             Normalize_CheckBox.Checked = CurrentAudioProcessingSettings.Normalize;
             SelectedFrame_NumericUpDown.Value = CurrentVisualizationSettings.SelectedFrameIndex;
+            HopSize_NumericUpDown.Value = CurrentAudioProcessingSettings.HopSize;
         }
 
         private void SetupComboBoxes()
         {
             FrameSize_ComboBox.Items.Clear();
             FrameSize_ComboBox.Items.AddRange(new object[] { 128, 256, 512, 1024, 2048 });
-            FrameSize_ComboBox.SelectedIndex = 1;
+            FrameSize_ComboBox.SelectedIndex = 3;
             CurrentAudioProcessingSettings.FrameSize = (int)FrameSize_ComboBox.SelectedItem!;
 
             WindowType_ComboBox.Items.Clear();
@@ -62,7 +63,6 @@ namespace AiPD2.Forms
 
         private void CreatePlotsList()
         {
-            Plots.Add((Waveform_Plot, "Waveform"));
             Plots.Add((WindowedWaveform_Plot, "Windowed waveform"));
             Plots.Add((FFTMagnitude_Plot, "Spectrum"));
             Plots.Add((Volume_Plot, "Volume"));
@@ -76,6 +76,8 @@ namespace AiPD2.Forms
             Plots.Add((WindowedFrame_Plot, "Windowed Frame"));
             Plots.Add((FrameSpectrum_Plot, "Frame Spectrum"));
             Plots.Add((FrameCepstrum_Plot, "Frame Cepstrum"));
+            Plots.Add((Spectrogram_Plot, "Spectrogram"));
+            Plots.Add((Waveform_Plot, "Waveform"));
         }
 
         private void SetupPlots()
@@ -107,6 +109,10 @@ namespace AiPD2.Forms
                     ((HandledMouseEventArgs)e).Handled = true;
                 };
             }
+
+            Spectrogram_Plot.Plot.Layout.Default();
+
+            UpdateScrollSize();
         }
 
         private void LinkTwoPlotsBidirectionally(FormsPlot plot1, FormsPlot plot2)
@@ -194,8 +200,7 @@ namespace AiPD2.Forms
 
             UpdateFramePlots();
 
-            //Waveform_Plot.Plot.Axes.AutoScale();
-            //Waveform_Plot.Refresh();
+            PlotSpectrogram();
         }
 
         private void PlotSignalOnPlot(FormsPlot plot, double[] data, ScottPlot.Color color, double step = 1.0)
@@ -238,8 +243,6 @@ namespace AiPD2.Forms
             }
 
             plot.Plot.ShowLegend();
-            //plot.Plot.Axes.Bottom.Label.Text = "Frame";
-            //plot.Plot.Axes.Left.Label.Text = "Energy Ratio";
             plot.Plot.Axes.AutoScale();
             plot.Refresh();
         }
@@ -263,6 +266,77 @@ namespace AiPD2.Forms
                 .Select(i => (double)i / CurrentWaveform.SampleRate)
                 .ToArray();
             PlotScatterOnPlot(FrameCepstrum_Plot, quefrencies, cepstrum, ScottPlot.Colors.Orange);
+        }
+
+        private ScottPlot.Panels.ColorBar? _spectrogramColorBar;
+
+        private void PlotSpectrogram()
+        {
+            if (CurrentAnalysisResult == null || CurrentWaveform == null) return;
+
+            double[,] matrix = BuildSpectrogramMatrix(CurrentAnalysisResult.FrameLevelSpectra);
+
+            Spectrogram_Plot.Plot.Clear();
+
+            var heatmap = Spectrogram_Plot.Plot.Add.Heatmap(matrix);
+            heatmap.Colormap = new ScottPlot.Colormaps.Magma();
+
+            double secondsPerFrame = (double)CurrentAudioProcessingSettings.HopSize / CurrentWaveform.SampleRate;
+            double maxFrequency = CurrentWaveform.SampleRate / 2.0;
+            double totalSeconds = CurrentAnalysisResult.FrameLevelSpectra.Length * secondsPerFrame;
+
+            heatmap.Position = new ScottPlot.CoordinateRect(
+                left: 0,
+                right: totalSeconds,
+                bottom: 0,
+                top: maxFrequency
+            );
+
+            if (_spectrogramColorBar == null)
+                _spectrogramColorBar = Spectrogram_Plot.Plot.Add.ColorBar(heatmap);
+            else
+                _spectrogramColorBar.Source = heatmap;
+
+            Spectrogram_Plot.Plot.Axes.AutoScale();
+            Spectrogram_Plot.Refresh();
+        }
+        #endregion
+
+        #region HELPERS
+        private double[,] BuildSpectrogramMatrix(double[][] spectra)
+        {
+            int frames = spectra.Length;
+            int bins = spectra[0].Length;
+            double[,] matrix = new double[bins, frames];
+            double db_silence_floor = -120;
+
+            for (int n = 0; n < frames; n++)
+                for (int k = 0; k < bins; k++)
+                {
+                    double magnitude = spectra[n][k];
+                    matrix[k, n] = magnitude > 0 ? 20 * Math.Log10(magnitude) : db_silence_floor;
+                }
+
+            return matrix;
+        }
+        #endregion
+
+        #region WinForms
+        private void UpdateScrollSize()
+        {
+            if (Plots.Count == 0) return;
+
+            int totalHeight = Plots
+                .Select(p => p.Item1.Bottom)
+                .Max() + 10;
+
+            MainSplitContainer.Panel1.AutoScrollMinSize = new Size(0, totalHeight);
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            UpdateScrollSize();
         }
         #endregion
 

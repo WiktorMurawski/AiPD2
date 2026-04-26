@@ -36,6 +36,7 @@
             viewToolStripMenuItem = new ToolStripMenuItem();
             resetPlotsToolStripMenuItem = new ToolStripMenuItem();
             MainSplitContainer = new SplitContainer();
+            Spectrogram_Plot = new ScottPlot.WinForms.FormsPlot();
             FrameCepstrum_Plot = new ScottPlot.WinForms.FormsPlot();
             FrameSpectrum_Plot = new ScottPlot.WinForms.FormsPlot();
             WindowedFrame_Plot = new ScottPlot.WinForms.FormsPlot();
@@ -137,6 +138,7 @@
             MainSplitContainer.Panel1.AutoScroll = true;
             MainSplitContainer.Panel1.AutoScrollMinSize = new Size(20, 0);
             MainSplitContainer.Panel1.BackColor = Color.White;
+            MainSplitContainer.Panel1.Controls.Add(Spectrogram_Plot);
             MainSplitContainer.Panel1.Controls.Add(FrameCepstrum_Plot);
             MainSplitContainer.Panel1.Controls.Add(FrameSpectrum_Plot);
             MainSplitContainer.Panel1.Controls.Add(WindowedFrame_Plot);
@@ -165,6 +167,16 @@
             MainSplitContainer.SplitterDistance = 650;
             MainSplitContainer.TabIndex = 1;
             // 
+            // Spectrogram_Plot
+            // 
+            Spectrogram_Plot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            Spectrogram_Plot.BackColor = Color.White;
+            Spectrogram_Plot.Location = new Point(3, 2803);
+            Spectrogram_Plot.Margin = new Padding(3, 0, 3, 0);
+            Spectrogram_Plot.Name = "Spectrogram_Plot";
+            Spectrogram_Plot.Size = new Size(128, 200);
+            Spectrogram_Plot.TabIndex = 14;
+            // 
             // FrameCepstrum_Plot
             // 
             FrameCepstrum_Plot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -172,7 +184,7 @@
             FrameCepstrum_Plot.Location = new Point(3, 2603);
             FrameCepstrum_Plot.Margin = new Padding(3, 0, 3, 0);
             FrameCepstrum_Plot.Name = "FrameCepstrum_Plot";
-            FrameCepstrum_Plot.Size = new Size(179, 200);
+            FrameCepstrum_Plot.Size = new Size(128, 200);
             FrameCepstrum_Plot.TabIndex = 13;
             // 
             // FrameSpectrum_Plot
@@ -182,7 +194,7 @@
             FrameSpectrum_Plot.Location = new Point(3, 2403);
             FrameSpectrum_Plot.Margin = new Padding(3, 0, 3, 0);
             FrameSpectrum_Plot.Name = "FrameSpectrum_Plot";
-            FrameSpectrum_Plot.Size = new Size(179, 200);
+            FrameSpectrum_Plot.Size = new Size(128, 200);
             FrameSpectrum_Plot.TabIndex = 12;
             // 
             // WindowedFrame_Plot
@@ -192,7 +204,7 @@
             WindowedFrame_Plot.Location = new Point(3, 2203);
             WindowedFrame_Plot.Margin = new Padding(3, 0, 3, 0);
             WindowedFrame_Plot.Name = "WindowedFrame_Plot";
-            WindowedFrame_Plot.Size = new Size(179, 200);
+            WindowedFrame_Plot.Size = new Size(128, 200);
             WindowedFrame_Plot.TabIndex = 11;
             // 
             // FundamentalFrequency_Plot
@@ -202,7 +214,7 @@
             FundamentalFrequency_Plot.Location = new Point(3, 2003);
             FundamentalFrequency_Plot.Margin = new Padding(3, 0, 3, 0);
             FundamentalFrequency_Plot.Name = "FundamentalFrequency_Plot";
-            FundamentalFrequency_Plot.Size = new Size(179, 200);
+            FundamentalFrequency_Plot.Size = new Size(128, 200);
             FundamentalFrequency_Plot.TabIndex = 10;
             // 
             // SpectralCrestFactor_Plot
@@ -212,7 +224,7 @@
             SpectralCrestFactor_Plot.Location = new Point(3, 1803);
             SpectralCrestFactor_Plot.Margin = new Padding(3, 0, 3, 0);
             SpectralCrestFactor_Plot.Name = "SpectralCrestFactor_Plot";
-            SpectralCrestFactor_Plot.Size = new Size(179, 200);
+            SpectralCrestFactor_Plot.Size = new Size(128, 200);
             SpectralCrestFactor_Plot.TabIndex = 9;
             // 
             // SpectralFlatnessMeasure_Plot
@@ -222,7 +234,7 @@
             SpectralFlatnessMeasure_Plot.Location = new Point(3, 1603);
             SpectralFlatnessMeasure_Plot.Margin = new Padding(3, 0, 3, 0);
             SpectralFlatnessMeasure_Plot.Name = "SpectralFlatnessMeasure_Plot";
-            SpectralFlatnessMeasure_Plot.Size = new Size(179, 200);
+            SpectralFlatnessMeasure_Plot.Size = new Size(128, 200);
             SpectralFlatnessMeasure_Plot.TabIndex = 8;
             // 
             // BandEnergyRatio_Plot
@@ -232,7 +244,7 @@
             BandEnergyRatio_Plot.Location = new Point(3, 1403);
             BandEnergyRatio_Plot.Margin = new Padding(3, 0, 3, 0);
             BandEnergyRatio_Plot.Name = "BandEnergyRatio_Plot";
-            BandEnergyRatio_Plot.Size = new Size(179, 200);
+            BandEnergyRatio_Plot.Size = new Size(128, 200);
             BandEnergyRatio_Plot.TabIndex = 7;
             // 
             // BandEnergy_Plot
@@ -242,7 +254,7 @@
             BandEnergy_Plot.Location = new Point(3, 1203);
             BandEnergy_Plot.Margin = new Padding(3, 0, 3, 0);
             BandEnergy_Plot.Name = "BandEnergy_Plot";
-            BandEnergy_Plot.Size = new Size(179, 200);
+            BandEnergy_Plot.Size = new Size(128, 200);
             BandEnergy_Plot.TabIndex = 6;
             // 
             // EffectiveBandwidth_Plot
@@ -252,7 +264,7 @@
             EffectiveBandwidth_Plot.Location = new Point(3, 1003);
             EffectiveBandwidth_Plot.Margin = new Padding(3, 0, 3, 0);
             EffectiveBandwidth_Plot.Name = "EffectiveBandwidth_Plot";
-            EffectiveBandwidth_Plot.Size = new Size(179, 200);
+            EffectiveBandwidth_Plot.Size = new Size(128, 200);
             EffectiveBandwidth_Plot.TabIndex = 5;
             // 
             // FrequencyCentroid_Plot
@@ -262,7 +274,7 @@
             FrequencyCentroid_Plot.Location = new Point(3, 803);
             FrequencyCentroid_Plot.Margin = new Padding(3, 0, 3, 0);
             FrequencyCentroid_Plot.Name = "FrequencyCentroid_Plot";
-            FrequencyCentroid_Plot.Size = new Size(179, 200);
+            FrequencyCentroid_Plot.Size = new Size(128, 200);
             FrequencyCentroid_Plot.TabIndex = 4;
             // 
             // Volume_Plot
@@ -272,7 +284,7 @@
             Volume_Plot.Location = new Point(3, 603);
             Volume_Plot.Margin = new Padding(3, 0, 3, 0);
             Volume_Plot.Name = "Volume_Plot";
-            Volume_Plot.Size = new Size(179, 200);
+            Volume_Plot.Size = new Size(128, 200);
             Volume_Plot.TabIndex = 3;
             // 
             // WindowedWaveform_Plot
@@ -282,7 +294,7 @@
             WindowedWaveform_Plot.Location = new Point(3, 203);
             WindowedWaveform_Plot.Margin = new Padding(3, 3, 3, 0);
             WindowedWaveform_Plot.Name = "WindowedWaveform_Plot";
-            WindowedWaveform_Plot.Size = new Size(179, 200);
+            WindowedWaveform_Plot.Size = new Size(128, 200);
             WindowedWaveform_Plot.TabIndex = 2;
             WindowedWaveform_Plot.Tag = "";
             // 
@@ -293,7 +305,7 @@
             FFTMagnitude_Plot.Location = new Point(3, 403);
             FFTMagnitude_Plot.Margin = new Padding(3, 0, 3, 0);
             FFTMagnitude_Plot.Name = "FFTMagnitude_Plot";
-            FFTMagnitude_Plot.Size = new Size(179, 200);
+            FFTMagnitude_Plot.Size = new Size(128, 200);
             FFTMagnitude_Plot.TabIndex = 1;
             // 
             // Waveform_Plot
@@ -303,7 +315,7 @@
             Waveform_Plot.Location = new Point(3, 3);
             Waveform_Plot.Margin = new Padding(3, 3, 3, 0);
             Waveform_Plot.Name = "Waveform_Plot";
-            Waveform_Plot.Size = new Size(179, 200);
+            Waveform_Plot.Size = new Size(128, 200);
             Waveform_Plot.TabIndex = 0;
             Waveform_Plot.Tag = "";
             // 
@@ -533,5 +545,6 @@
         private ScottPlot.WinForms.FormsPlot FrameCepstrum_Plot;
         private ScottPlot.WinForms.FormsPlot FrameSpectrum_Plot;
         private ScottPlot.WinForms.FormsPlot WindowedFrame_Plot;
+        private ScottPlot.WinForms.FormsPlot Spectrogram_Plot;
     }
 }
