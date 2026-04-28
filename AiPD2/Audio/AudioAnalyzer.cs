@@ -17,22 +17,21 @@ namespace AiPD2.Audio
             // Framing
             double[][] frames = FrameSplitter.SplitIntoFrames(processed, settings.FrameSize, settings.HopSize);
 
-            // Padding
-            processed = Preprocessor.PadToPowerOfTwo(processed);
-            int paddedLength = processed.Length;
-
             // Windowing
             IWindow window = Windowing.CreateWindow(settings.WindowType);
             double[] windowedSignal = window.Apply(processed);
-            processed = windowedSignal;
             for (int i = 0; i < frames.Length; i++)
             {
                 frames[i] = window.Apply(frames[i]);
             }
             double[] frameWindowCoefficients = window.GetCoefficients(settings.FrameSize);
 
+            // Padding
+            double[] paddedWindowedSignal = Preprocessor.PadToPowerOfTwo(windowedSignal);
+            int paddedLength = paddedWindowedSignal.Length;
+
             // FFT
-            double[] fullSpectrum = FFTProcessor.ComputeSpectrum(processed);
+            double[] fullSpectrum = FFTProcessor.ComputeSpectrum(paddedWindowedSignal);
             double[][] frameLevelSpectra = FFTProcessor.ComputeSpectra(frames);
 
             // Feature Extraction

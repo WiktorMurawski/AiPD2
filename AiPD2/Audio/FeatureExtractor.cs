@@ -4,9 +4,10 @@
     {
         public static double[] ComputeVolume(double[][] spectra, int frameSize)
         {
-            double[] volume = new double[spectra.Length];
+            int numFrames = spectra.Length;
+            double[] volume = new double[numFrames];
 
-            for (int n = 0; n < spectra.Length; n++)
+            for (int n = 0; n < numFrames; n++)
             {
                 double sum = 0;
                 for (int k = 0; k < spectra[n].Length; k++)
@@ -91,7 +92,7 @@
                 }
             }
 
-            return bandEnergy; // [bandIndex][frameIndex]
+            return bandEnergy;
         }
 
         public static double[][] ComputeBandEnergyRatio(double[][] bandEnergy)
@@ -113,7 +114,7 @@
                     ratio[b][n] = totalEnergy == 0 ? 0 : bandEnergy[b][n] / totalEnergy;
             }
 
-            return ratio; // [bandIndex][frameIndex]
+            return ratio;
         }
 
         public static double[][] ComputeSpectralFlatnessMeasure(double[][] spectra, int sampleRate, int frameSize)
@@ -133,7 +134,7 @@
                 for (int n = 0; n < spectra.Length; n++)
                 {
                     double arithmeticMean = 0;
-                    double logSum = 0; // sum of logs instead of product to avoid underflow
+                    double logSum = 0;
 
                     for (int k = kMin; k <= kMax; k++)
                     {
@@ -146,7 +147,7 @@
 
                     if (arithmeticMean == 0)
                     {
-                        sfm[b][n] = 1; // MPEG-7 spec: return 1 when no signal present
+                        sfm[b][n] = 1;
                         continue;
                     }
 

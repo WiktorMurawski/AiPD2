@@ -51,7 +51,7 @@ namespace AiPD2.Forms
         private void SetupComboBoxes()
         {
             FrameSize_ComboBox.Items.Clear();
-            FrameSize_ComboBox.Items.AddRange(new object[] { 128, 256, 512, 1024, 2048 });
+            FrameSize_ComboBox.Items.AddRange(new object[] { 128, 256, 512, 1024, 2048, 4096 });
             FrameSize_ComboBox.SelectedIndex = 3;
             CurrentAudioProcessingSettings.FrameSize = (int)FrameSize_ComboBox.SelectedItem!;
 
@@ -63,6 +63,7 @@ namespace AiPD2.Forms
 
         private void CreatePlotsList()
         {
+            Plots.Add((Waveform_Plot, "Waveform"));
             Plots.Add((WindowedWaveform_Plot, "Windowed waveform"));
             Plots.Add((FFTMagnitude_Plot, "Spectrum"));
             Plots.Add((Volume_Plot, "Volume"));
@@ -77,7 +78,6 @@ namespace AiPD2.Forms
             Plots.Add((FrameSpectrum_Plot, "Frame Spectrum"));
             Plots.Add((FrameCepstrum_Plot, "Frame Cepstrum"));
             Plots.Add((Spectrogram_Plot, "Spectrogram"));
-            Plots.Add((Waveform_Plot, "Waveform"));
         }
 
         private void SetupPlots()
@@ -201,6 +201,9 @@ namespace AiPD2.Forms
             UpdateFramePlots();
 
             PlotSpectrogram();
+
+            Waveform_Plot.Plot.Axes.AutoScale();
+            Waveform_Plot.Refresh();
         }
 
         private void PlotSignalOnPlot(FormsPlot plot, double[] data, ScottPlot.Color color, double step = 1.0)
@@ -314,7 +317,9 @@ namespace AiPD2.Forms
                 for (int k = 0; k < bins; k++)
                 {
                     double magnitude = spectra[n][k];
-                    matrix[k, n] = magnitude > 0 ? 20 * Math.Log10(magnitude) : db_silence_floor;
+                    //matrix[k, n] = magnitude > 1e-9 ? 20 * Math.Log10(magnitude) : db_silence_floor;
+                    int flippedK = bins - 1 - k;
+                    matrix[flippedK, n] = magnitude > 1e-9 ? 20 * Math.Log10(magnitude) : db_silence_floor;
                 }
 
             return matrix;
